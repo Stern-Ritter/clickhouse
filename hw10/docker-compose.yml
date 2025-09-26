@@ -1,0 +1,90 @@
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    networks:
+      - clickhouse-network
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+      - ZOOKEEPER_CLIENT_PORT=2181
+
+  clickhouse-1:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: clickhouse-server-1
+    ports:
+      - "8123:8123" 
+      - "9000:9000"
+    volumes:
+      - clickhouse_data_1:/var/lib/clickhouse
+      - ./config/clickhouse_1_config.xml:/etc/clickhouse-server/config.d/config.xml
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=password
+    networks:
+      - clickhouse-network
+    depends_on:
+      - zookeeper
+
+  clickhouse-2:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: clickhouse-server-2
+    ports:
+      - "8124:8123"
+      - "9001:9000"
+    volumes:
+      - clickhouse_data_2:/var/lib/clickhouse
+      - ./config/clickhouse_2_config.xml:/etc/clickhouse-server/config.d/config.xml
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=password
+    networks:
+      - clickhouse-network
+    depends_on:
+      - zookeeper
+
+  clickhouse-3:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: clickhouse-server-3
+    ports:
+      - "8125:8123"
+      - "9002:9000"
+    volumes:
+      - clickhouse_data_3:/var/lib/clickhouse
+      - ./config/clickhouse_3_config.xml:/etc/clickhouse-server/config.d/config.xml
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=password
+    networks:
+      - clickhouse-network
+    depends_on:
+      - zookeeper
+  
+  clickhouse-4:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: clickhouse-server-4
+    ports:
+      - "8126:8123"
+      - "9003:9000"
+    volumes:
+      - clickhouse_data_4:/var/lib/clickhouse
+      - ./config/clickhouse_4_config.xml:/etc/clickhouse-server/config.d/config.xml
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=password
+    networks:
+      - clickhouse-network
+    depends_on:
+      - zookeeper
+
+networks:
+  clickhouse-network:
+    driver: bridge
+
+volumes:
+  clickhouse_data_1:
+  clickhouse_data_2:
+  clickhouse_data_3:
+  clickhouse_data_4:
